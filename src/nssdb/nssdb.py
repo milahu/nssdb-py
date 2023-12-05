@@ -8,6 +8,8 @@ import hashlib
 
 import cryptography.x509
 
+__version__ = "0.0.1"
+
 cert9_create_table_sql = """
 CREATE TABLE nssPublic (id PRIMARY KEY UNIQUE ON CONFLICT ABORT, a0, a1, a2, a3, a10, a11, a12, a80, a81, a82, a83, a84, a85, a86, a87, a88, a89, a8a, a8b, a90, a100, a101, a102, a103, a104, a105, a106, a107, a108, a109, a10a, a10b, a10c, a110, a111, a120, a121, a122, a123, a124, a125, a126, a127, a128, a129, a130, a131, a132, a133, a134, a160, a161, a162, a163, a164, a165, a166, a170, a180, a181, a200, a201, a202, a210, a300, a301, a302, a400, a401, a402, a403, a404, a405, a406, a480, a481, a482, a500, a501, a502, a503, a40000211, a40000212, a80000001, ace534351, ace534352, ace534353, ace534354, ace534355, ace534356, ace534357, ace534358, ace534364, ace534365, ace534366, ace534367, ace534368, ace534369, ace534373, ace534374, ace536351, ace536352, ace536353, ace536354, ace536355, ace536356, ace536357, ace536358, ace536359, ace53635a, ace53635b, ace53635c, ace53635d, ace53635e, ace53635f, ace536360, ace5363b4, ace5363b5, ad5a0db00);
 CREATE INDEX issuer ON nssPublic (a81);

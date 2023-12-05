@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nssdb"
+dynamic = ["version"]
+dependencies = [
+    "cryptography",
+]
+requires-python = ">=3.8"
+authors = [
+    {name = "Milan Hauth", email = "milahu@gmail.com"},
+]
+maintainers = [
+]
+description = "add a ca.crt certificate to $HOME/.pki/nssdb/cert9.db and $HOME/.pki/nssdb/key4.db in python"
+readme = "readme.md"
+license = {file = "license.txt"}
+keywords = [
+    "nss",
+    "nssdb",
+    "certutil",
+    "certificate",
+    "certificates",
+    "ssl",
+    "tls",
+    "https",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "nssdb.__version__"}
+
+[project.urls]
+Homepage = "https://github.com/milahu/nssdb-py"
