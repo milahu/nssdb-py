@@ -1,10 +1,10 @@
 import sqlite3
 import os
-import tempfile
 import re
 import base64
 import sys
 import random
+import hashlib
 
 import cryptography.x509
 
@@ -152,10 +152,8 @@ def certutil(
         # Subject Public Key Modulus
         # https://stackoverflow.com/a/62454235/10440128
         pubkey_modulus_bytes = bytes_of_int(cert.public_key().public_numbers().n)
-        import hashlib
         pubkey_modulus_sha1 = hashlib.sha1(pubkey_modulus_bytes).digest()
         #print("pubkey_modulus_sha1", pubkey_modulus_sha1.hex())
-        # 0a90d4a65d7a9f2a46e19f6677ec5827d1b91a09
 
         #print("cert_body_bytes", cert_body_bytes.hex())
 
@@ -168,7 +166,6 @@ def certutil(
 
         before_serial_number_bytes = cert_body_bytes[(serial_number_idx - 2):serial_number_idx]
         #print("before_serial_number_bytes", before_serial_number_bytes.hex())
-        # 0214
 
         # TODO? flip cert.issuer.public_bytes() and cert.subject.public_bytes()
         # in my test case, these 2 are equal
