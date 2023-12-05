@@ -104,8 +104,6 @@ def certutil(
     cert9_db_conn = sqlite3.connect(cert9_db_path)
     key4_db_conn = sqlite3.connect(key4_db_path)
 
-    module_dir = os.path.dirname(__file__)
-
     if os.path.getsize(cert9_db_path) == 0:
         print(f"creating cert9.db: {cert9_db_path}")
         cert9_db_conn.executescript(cert9_create_table_sql)
@@ -131,28 +129,9 @@ def certutil(
         if i != None and not os.path.exists(i):
             raise Exception(f"certutil: unable to open {repr(i)} for reading.")
 
-        i_temp = None
         if i == None:
             # read from stdin
-            # ssl_ctx.load_verify_locations needs a file
-            # so create a tempfile
-            i_temp = tempfile.mktemp(dir=tempdir, suffix="-nss_certutil-input.crt")
-            with (
-                open(sys.stdin, "r") as src,
-                open(i_temp, "w") as dst,
-            ):
-                dst.write(src.read())
-            i = i_temp
-
-        """
-        with open(i, "r") as f:
-            cert_text = f.read()
-
-        cert_body_list = re.findall(r"-----BEGIN CERTIFICATE-----\n([a-zA-Z0-9+/=\n]+)\n-----END CERTIFICATE-----", cert_text)
-        assert len(cert_body_list) == 1, f"found {len(cert_body_list)} certificates in the input file"
-        cert_body = cert_body_list[0]
-        cert_data = base64.b64decode(cert_body)
-        """
+            i = sys.stdin
 
         with open(i, "rb") as fp:
             cert_pem_bytes = fp.read()
@@ -233,19 +212,6 @@ def certutil(
         # TODO? INSERT INTO nssPublic VALUES(169958831,X'ce534353',X'01',X'00',X'a5005a',NULL,NULL,NULL,NULL,X'301b3119301706035504030c1053656c656e69756d2057697265204341',X'021421473a7679ea8585f76585d0ce967227582d5307',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,X'01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,X'ce534352',X'ce534352',X'ce534353',X'ce534353',NULL,NULL,NULL,NULL,X'00',X'1045901d22d2a64bc629b566d384f44de35583ce',X'74105d5b0fc5767e179feeb7f6975a12',NULL);
         # certutil says "Database needs user init"
         # but chromium should be able to use the database
-
-        sql_dump = ""
-        for val in values.values():
-            if val == None:
-                sql_dump += "NULL,"
-            elif type(val) == bytes:
-                sql_dump += "X'" + val.hex() + "',"
-            else:
-                sql_dump += repr(val) + ","
-        if sql_dump != "":
-            # remove last ","
-            sql_dump = sql_dump[:-1]
-        print("sql dump:", sql_dump)
 
         print("inserting certificate")
         sql_query = f"INSERT INTO nssPublic({','.join(values.keys())}) VALUES({','.join(map(lambda _: '?', values.keys()))})"
